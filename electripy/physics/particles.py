@@ -1,6 +1,6 @@
 from numpy import array, ndarray
 from numpy.linalg import norm
-from electripy.physics.constants import COULOMB_CONST
+from electripy.physics import constants
 from typing import Union
 
 
@@ -20,7 +20,9 @@ class PointParticle:
     def electric_field(self, point: ndarray):
         r_vector = array(self.possition - point)
         r_norm = norm(r_vector)
-        return COULOMB_CONST * array(r_vector * (self.charge / r_norm ** 3)) * -1
+        return (
+            constants.COULOMB_CONST * array(r_vector * (self.charge / r_norm ** 3)) * -1
+        )
 
 
 class ParticleSet:
@@ -43,3 +45,15 @@ class ParticleSet:
         """
         ef = self.electric_field(particle.possition)
         return ef * particle.charge
+
+
+class Electron(PointParticle):
+    def __init__(self, possition: ndarray):
+        self.charge = constants.ELEMENTARY_CHARGE * -1
+        self.possition = array(possition)
+
+
+class Proton(PointParticle):
+    def __init__(self, possition: ndarray):
+        self.charge = constants.ELEMENTARY_CHARGE
+        self.possition = array(possition)
