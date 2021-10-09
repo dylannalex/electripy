@@ -4,7 +4,7 @@ from electripy.physics import constants
 from typing import Union
 
 
-class PointParticle:
+class PointCharge:
     def __init__(
         self,
         charge: Union[float, int],
@@ -25,8 +25,8 @@ class PointParticle:
         )
 
 
-class ParticleSet:
-    def __init__(self, particles: list[PointParticle]):
+class ChargesSet:
+    def __init__(self, particles: list[PointCharge]):
         self.particles = particles
 
     def electric_field(self, point: ndarray):
@@ -38,7 +38,7 @@ class ParticleSet:
             ef += particle.electric_field(point)
         return ef
 
-    def force(self, particle: PointParticle):
+    def force(self, particle: PointCharge):
         """
         Returns the force of the electric field exerted
         on the particle.
@@ -47,13 +47,13 @@ class ParticleSet:
         return ef * particle.charge
 
 
-class Electron(PointParticle):
+class Electron(PointCharge):
     def __init__(self, possition: ndarray):
         self.charge = constants.ELEMENTARY_CHARGE * -1
         self.possition = array(possition)
 
 
-class Proton(PointParticle):
+class Proton(PointCharge):
     def __init__(self, possition: ndarray):
         self.charge = constants.ELEMENTARY_CHARGE
         self.possition = array(possition)
