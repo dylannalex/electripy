@@ -42,3 +42,6 @@ class ChargeNetwork:
                 ]
             )
         return electric_fields
+
+    def __len__(self):
+        return len(self.charges)
