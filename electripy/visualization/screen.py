@@ -30,12 +30,18 @@ class Screen:
             self._window, settings.DEFAULT_VECTOR_SCALE_FACTOR, colors.YELLOW
         )
 
+        # Sounds setup
+        self.add_charge_sound = pygame.mixer.Sound(
+            "electripy/visualization/sounds/add_charge.wav"
+        )
+
     def clean(self) -> None:
         """Fills the screen with it's background color"""
         self._window.fill(self.background_color)
 
     def add_charge(self, charge) -> None:
         """Adds a charge to the screen and to the charge network"""
+        self.add_charge_sound.play()
         self.charge_network.add_charge(charge)
         self._refresh_screen()
 
