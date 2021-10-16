@@ -35,6 +35,8 @@ def start_simulation(screen: Screen, clock: pygame.time.Clock) -> None:
                     screen.increment_scale_factor()
                 if key_pressed == settings.KEYS["decrement_scale_factor"]:
                     screen.decrement_scale_factor()
+                if key_pressed == settings.KEYS["show_force_array"]:
+                    screen.show_force_array()
 
         pygame.display.update()
 

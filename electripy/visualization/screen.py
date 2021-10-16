@@ -1,9 +1,9 @@
 from numpy import ndarray
 import pygame
+from typing import Union
 from electripy.physics.charges import Proton, Electron
 from electripy.physics.charge_network import ChargeNetwork
-from electripy.visualization import colors, settings
-from typing import Union
+from electripy.visualization import colors, settings, string
 
 
 class Screen:
@@ -35,6 +35,12 @@ class Screen:
             "electripy/visualization/sounds/add_charge.wav"
         )
 
+        # Text setup
+        pygame.font.init()
+        self.font = pygame.font.SysFont("Arial", 13)
+        self.text_color = colors.WHITE
+        self._show_force_array = False
+
     def clean(self) -> None:
         """Fills the screen with it's background color"""
         self._window.fill(self.background_color)
@@ -57,6 +63,22 @@ class Screen:
     def decrement_scale_factor(self) -> None:
         self.vector.scale_factor /= Vector.DELTA_SCALE_FACTOR
         self._refresh_screen()
+
+    def show_force_array(self):
+        if self._show_force_array:
+            self._show_force_array = False
+        else:
+            self._show_force_array = True
+        self._refresh_screen()
+
+    def _display_force_array(self, possition, force):
+        """Displays the force array next to the force vector drawn"""
+        x, y = string.array_to_string(force)
+        x_text = self.font.render(x, True, self.text_color)
+        y_text = self.font.render(y, True, self.text_color)
+        self._window.blit(x_text, possition)
+        possition[1] += 15
+        self._window.blit(y_text, possition)
 
     def _refresh_screen(self) -> None:
         """
@@ -84,6 +106,8 @@ class Screen:
 
         if len(self.charge_network) > 1:
             self.vector.draw(charge.possition, force, radius)
+            if self._show_force_array:
+                self._display_force_array(self.vector.last_end_point, force)
 
 
 class Vector:
@@ -93,6 +117,7 @@ class Vector:
         self._window = window
         self.scale_factor = scale_factor
         self.color = color
+        self.last_end_point = [0, 0]
 
     def draw(self, possition: tuple, vector: tuple, radius: int):
         vector_norm = (vector[0] ** 2 + vector[1] ** 2) ** (1 / 2)
@@ -106,6 +131,7 @@ class Vector:
             start_point[1] + vector[1] * self.scale_factor,
         ]
         pygame.draw.line(self._window, self.color, start_point, end_point, 2)
+        self.last_end_point = end_point
 
 
 class AnimatedProton:

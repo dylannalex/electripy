@@ -8,4 +8,5 @@ KEYS = {
     "clear_screen": "r",
     "increment_scale_factor": "+",
     "decrement_scale_factor": "-",
+    "show_force_array": "t",
 }
