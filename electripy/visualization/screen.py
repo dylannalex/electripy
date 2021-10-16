@@ -39,10 +39,23 @@ class Screen:
         """Fills the screen with it's background color"""
         self._window.fill(self.background_color)
 
+    def clear(self) -> None:
+        """Restarts charge network"""
+        self.charge_network = ChargeNetwork()
+        self.clean()
+
     def add_charge(self, charge) -> None:
         """Adds a charge to the screen and to the charge network"""
         self.add_charge_sound.play()
         self.charge_network.add_charge(charge)
+        self._refresh_screen()
+
+    def increment_scale_factor(self) -> None:
+        self.vector.scale_factor *= Vector.DELTA_SCALE_FACTOR
+        self._refresh_screen()
+
+    def decrement_scale_factor(self) -> None:
+        self.vector.scale_factor /= Vector.DELTA_SCALE_FACTOR
         self._refresh_screen()
 
     def _refresh_screen(self) -> None:
@@ -74,6 +87,8 @@ class Screen:
 
 
 class Vector:
+    DELTA_SCALE_FACTOR = 2
+
     def __init__(self, window, scale_factor, color):
         self._window = window
         self.scale_factor = scale_factor
