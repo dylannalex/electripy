@@ -11,13 +11,16 @@ class PointCharge:
         possition: ndarray,
     ):
         """
-        charge: particle charge in coulomb.
-        possition: particle two-dimensional vector in meters.
+        charge: electric charge in coulomb
+        possition: two-dimensional vector in meters
         """
         self.charge = charge
         self.possition = array(possition)
 
-    def electric_field(self, point: ndarray):
+    def electric_field(self, point: ndarray) -> ndarray:
+        """
+        Returns the electric field at the specified point.
+        """
         r_vector = array(self.possition - point)
         r_norm = norm(r_vector)
         return (
@@ -26,34 +29,51 @@ class PointCharge:
 
 
 class ChargesSet:
-    def __init__(self, particles: list[PointCharge]):
-        self.particles = particles
+    """
+    A ChargesSet instance is a group of charges. The electric
+    field at a given point can be calculated as the sum of each
+    electric field at that point for every charge in the charge
+    set.
+    """
 
-    def electric_field(self, point: ndarray):
+    def __init__(self, charges: list[PointCharge]):
+        self.charges = charges
+
+    def electric_field(self, point: ndarray) -> ndarray:
         """
         Returns the electric field at the specified point.
         """
         ef = array([0.0, 0.0])
-        for particle in self.particles:
-            ef += particle.electric_field(point)
+        for charge in self.charges:
+            ef += charge.electric_field(point)
         return ef
 
-    def force(self, particle: PointCharge):
+    def electric_force(self, charge: PointCharge) -> ndarray:
         """
         Returns the force of the electric field exerted
-        on the particle.
+        on the charge.
         """
-        ef = self.electric_field(particle.possition)
-        return ef * particle.charge
+        ef = self.electric_field(charge.possition)
+        return ef * charge.charge
 
 
 class Electron(PointCharge):
+    """
+    An Electron instance is a PointCharge object which charge
+    is -e, where e is the elementary charge (1.60218e-19).
+    """
+
     def __init__(self, possition: ndarray):
         self.charge = constants.ELEMENTARY_CHARGE * -1
         self.possition = array(possition)
 
 
 class Proton(PointCharge):
+    """
+    A Proton instance is a PointCharge object which the charge
+    is e, where e is the elementary charge (1.60218e-19).
+    """
+
     def __init__(self, possition: ndarray):
         self.charge = constants.ELEMENTARY_CHARGE
         self.possition = array(possition)
