@@ -41,11 +41,11 @@ class ChargeNetwork:
             electric_forces.append([group[0], group[1].electric_force(group[0])])
         return electric_forces
 
-    def get_electric_field(self, possition: ndarray):
+    def get_electric_field(self, position: ndarray):
         """
         Returns the electric force array at the given point.
         """
-        return self.charges_set.electric_field(possition)
+        return self.charges_set.electric_field(position)
 
     def __len__(self):
         return len(self.charges)

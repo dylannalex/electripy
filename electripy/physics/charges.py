@@ -8,20 +8,20 @@ class PointCharge:
     def __init__(
         self,
         charge: Union[float, int],
-        possition: ndarray,
+        position: ndarray,
     ):
         """
         charge: electric charge in coulomb
-        possition: two-dimensional vector in meters
+        position: two-dimensional vector in meters
         """
         self.charge = charge
-        self.possition = array(possition)
+        self.position = array(position)
 
     def electric_field(self, point: ndarray) -> ndarray:
         """
         Returns the electric field at the specified point.
         """
-        r_vector = array(self.possition - point)
+        r_vector = array(self.position - point)
         r_norm = norm(r_vector)
         return (
             constants.COULOMB_CONST * array(r_vector * (self.charge / r_norm ** 3)) * -1
@@ -53,7 +53,7 @@ class ChargesSet:
         Returns the force of the electric field exerted
         on the charge.
         """
-        ef = self.electric_field(charge.possition)
+        ef = self.electric_field(charge.position)
         return ef * charge.charge
 
 
@@ -63,9 +63,9 @@ class Electron(PointCharge):
     is -e, where e is the elementary charge (1.60218e-19).
     """
 
-    def __init__(self, possition: ndarray):
+    def __init__(self, position: ndarray):
         self.charge = constants.ELEMENTARY_CHARGE * -1
-        self.possition = array(possition)
+        self.position = array(position)
 
 
 class Proton(PointCharge):
@@ -74,6 +74,6 @@ class Proton(PointCharge):
     is e, where e is the elementary charge (1.60218e-19).
     """
 
-    def __init__(self, possition: ndarray):
+    def __init__(self, position: ndarray):
         self.charge = constants.ELEMENTARY_CHARGE
-        self.possition = array(possition)
+        self.position = array(position)

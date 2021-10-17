@@ -63,11 +63,11 @@ class Screen:
 
     def show_electric_field(self, x, y):
         self._refresh_screen()
-        possition = array([x, y])
-        ef = self.charge_network.get_electric_field(possition)
+        position = array([x, y])
+        ef = self.charge_network.get_electric_field(position)
         self._draw_vector(
             self.ef_vector,
-            possition,
+            position,
             ef,
             AnimatedPoint.RADIUS,
             colors.GREEN,
@@ -109,24 +109,24 @@ class Screen:
     def _draw_vector(
         self,
         vector,
-        possition: ndarray,
+        position: ndarray,
         array: ndarray,
         radius: int,
         color: tuple,
         show_components: bool,
     ):
-        vector.draw(possition, array, radius, color)
+        vector.draw(position, array, radius, color)
         if show_components:
             self._display_arrays_components(vector.last_end_point, array)
 
-    def _display_arrays_components(self, possition, array):
+    def _display_arrays_components(self, position, array):
         """Displays the arrays components next to the vector drawn"""
         x, y = numbers.array_to_string(array)
         x_text = self.font.render(x, True, self.text_color)
         y_text = self.font.render(y, True, self.text_color)
-        self._window.blit(x_text, possition)
-        possition[1] += 15
-        self._window.blit(y_text, possition)
+        self._window.blit(x_text, position)
+        position[1] += 15
+        self._window.blit(y_text, position)
 
     def _refresh_screen(self) -> None:
         """
@@ -150,12 +150,12 @@ class Screen:
             color = AnimatedElectron.COLOR
             radius = AnimatedElectron.RADIUS
 
-        pygame.draw.circle(self._window, color, charge.possition, radius)
+        pygame.draw.circle(self._window, color, charge.position, radius)
 
         if len(self.charge_network) > 1:
             self._draw_vector(
                 self.force_vector,
-                charge.possition,
+                charge.position,
                 force,
                 radius,
                 colors.YELLOW,
@@ -171,12 +171,12 @@ class Vector:
         self.scale_factor = scale_factor
         self.last_end_point = [0, 0]
 
-    def draw(self, possition: tuple, vector: tuple, radius: int, color: tuple):
+    def draw(self, position: tuple, vector: tuple, radius: int, color: tuple):
         vector_norm = (vector[0] ** 2 + vector[1] ** 2) ** (1 / 2)
         unit_vector = [vector[0] / vector_norm, vector[1] / vector_norm]
         start_point = [
-            possition[0] + unit_vector[0] * radius,
-            possition[1] + unit_vector[1] * radius,
+            position[0] + unit_vector[0] * radius,
+            position[1] + unit_vector[1] * radius,
         ]
         end_point = [
             start_point[0] + vector[0] * self.scale_factor,
