@@ -18,25 +18,31 @@ def start_simulation(screen: Screen, clock: pygame.time.Clock) -> None:
             # Mouse click events:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = event.pos
-                possition = array([mx, my])
+                position = array([mx, my])
                 if event.button == LEFT:
-                    charge = Proton(possition)
+                    charge = Proton(position)
                 elif event.button == RIGHT:
-                    charge = Electron(possition)
+                    charge = Electron(position)
                 else:
                     continue
                 screen.add_charge(charge)
             # Key down events:
-            elif event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:
                 key_pressed = pygame.key.name(event.key)
-                if key_pressed == settings.KEYS["clear_screen"]:
-                    screen.clear()
                 if key_pressed == settings.KEYS["increment_scale_factor"]:
                     screen.increment_scale_factor()
                 if key_pressed == settings.KEYS["decrement_scale_factor"]:
                     screen.decrement_scale_factor()
-                if key_pressed == settings.KEYS["show_force_array"]:
-                    screen.show_force_array()
+                if key_pressed == settings.KEYS["clear_screen"]:
+                    screen.clear()
+                if key_pressed == settings.KEYS["show_vector_components"]:
+                    screen.show_components()
+                if key_pressed == settings.KEYS["change_mode"]:
+                    screen.change_mode()
+
+        if screen.mode == "electric_field":
+            mx, my = pygame.mouse.get_pos()
+            screen.show_electric_field(mx, my)
 
         pygame.display.update()
 

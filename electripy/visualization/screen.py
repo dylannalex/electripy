@@ -1,9 +1,9 @@
-from numpy import ndarray
+from numpy import array, ndarray
 import pygame
 from typing import Union
-from electripy.physics.charges import Proton, Electron
+from electripy.physics.charges import PointCharge, Proton, Electron
 from electripy.physics.charge_network import ChargeNetwork
-from electripy.visualization import colors, settings, string
+from electripy.visualization import colors, settings, numbers
 
 
 class Screen:
@@ -26,9 +26,15 @@ class Screen:
 
         # Charge network and Vector setup
         self.charge_network = ChargeNetwork()
-        self.vector = Vector(
-            self._window, settings.DEFAULT_VECTOR_SCALE_FACTOR, colors.YELLOW
+        self.force_vector = Vector(
+            self._window, settings.DEFAULT_FORCE_VECTOR_SCALE_FACTOR
         )
+        self.ef_vector = Vector(self._window, settings.DEFAULT_EF_VECTOR_SCALE_FACTOR)
+
+        # State attributes
+        self.mode = "electric_force"
+        self._show_force_components = False
+        self._show_ef_components = True
 
         # Sounds setup
         self.add_charge_sound = pygame.mixer.Sound(
@@ -39,7 +45,6 @@ class Screen:
         pygame.font.init()
         self.font = pygame.font.SysFont("Arial", 13)
         self.text_color = colors.WHITE
-        self._show_force_array = False
 
     def clean(self) -> None:
         """Fills the screen with it's background color"""
@@ -56,24 +61,67 @@ class Screen:
         self.charge_network.add_charge(charge)
         self._refresh_screen()
 
+    def show_electric_field(self, x, y):
+        self._refresh_screen()
+        possition = array([x, y])
+        ef = self.charge_network.get_electric_field(possition)
+        self._draw_vector(
+            self.ef_vector,
+            possition,
+            ef,
+            AnimatedPoint.RADIUS,
+            colors.GREEN,
+            self._show_ef_components,
+        )
+
     def increment_scale_factor(self) -> None:
-        self.vector.scale_factor *= Vector.DELTA_SCALE_FACTOR
+        if self.mode == "electric_force":
+            self.force_vector.scale_factor *= Vector.DELTA_SCALE_FACTOR
+
+        if self.mode == "electric_field":
+            self.ef_vector.scale_factor *= Vector.DELTA_SCALE_FACTOR
+
         self._refresh_screen()
 
     def decrement_scale_factor(self) -> None:
-        self.vector.scale_factor /= Vector.DELTA_SCALE_FACTOR
+        if self.mode == "electric_force":
+            self.force_vector.scale_factor /= Vector.DELTA_SCALE_FACTOR
+
+        if self.mode == "electric_field":
+            self.ef_vector.scale_factor /= Vector.DELTA_SCALE_FACTOR
+
         self._refresh_screen()
 
-    def show_force_array(self):
-        if self._show_force_array:
-            self._show_force_array = False
+    def show_components(self):
+        if self.mode == "electric_field":
+            self._show_ef_components = not self._show_ef_components
+        if self.mode == "electric_force":
+            self._show_force_components = not self._show_force_components
+        self._refresh_screen()
+
+    def change_mode(self):
+        if self.mode == "electric_force":
+            self.mode = "electric_field"
         else:
-            self._show_force_array = True
+            self.mode = "electric_force"
         self._refresh_screen()
 
-    def _display_force_array(self, possition, force):
-        """Displays the force array next to the force vector drawn"""
-        x, y = string.array_to_string(force)
+    def _draw_vector(
+        self,
+        vector,
+        possition: ndarray,
+        array: ndarray,
+        radius: int,
+        color: tuple,
+        show_components: bool,
+    ):
+        vector.draw(possition, array, radius, color)
+        if show_components:
+            self._display_arrays_components(vector.last_end_point, array)
+
+    def _display_arrays_components(self, possition, array):
+        """Displays the arrays components next to the vector drawn"""
+        x, y = numbers.array_to_string(array)
         x_text = self.font.render(x, True, self.text_color)
         y_text = self.font.render(y, True, self.text_color)
         self._window.blit(x_text, possition)
@@ -105,21 +153,25 @@ class Screen:
         pygame.draw.circle(self._window, color, charge.possition, radius)
 
         if len(self.charge_network) > 1:
-            self.vector.draw(charge.possition, force, radius)
-            if self._show_force_array:
-                self._display_force_array(self.vector.last_end_point, force)
+            self._draw_vector(
+                self.force_vector,
+                charge.possition,
+                force,
+                radius,
+                colors.YELLOW,
+                self._show_force_components,
+            )
 
 
 class Vector:
     DELTA_SCALE_FACTOR = 2
 
-    def __init__(self, window, scale_factor, color):
+    def __init__(self, window, scale_factor):
         self._window = window
         self.scale_factor = scale_factor
-        self.color = color
         self.last_end_point = [0, 0]
 
-    def draw(self, possition: tuple, vector: tuple, radius: int):
+    def draw(self, possition: tuple, vector: tuple, radius: int, color: tuple):
         vector_norm = (vector[0] ** 2 + vector[1] ** 2) ** (1 / 2)
         unit_vector = [vector[0] / vector_norm, vector[1] / vector_norm]
         start_point = [
@@ -130,7 +182,8 @@ class Vector:
             start_point[0] + vector[0] * self.scale_factor,
             start_point[1] + vector[1] * self.scale_factor,
         ]
-        pygame.draw.line(self._window, self.color, start_point, end_point, 2)
+
+        pygame.draw.line(self._window, color, start_point, end_point, 2)
         self.last_end_point = end_point
 
 
@@ -142,3 +195,8 @@ class AnimatedProton:
 class AnimatedElectron:
     COLOR = colors.BLUE
     RADIUS = 20
+
+
+class AnimatedPoint:
+    COLOR = colors.ORANGE
+    RADIUS = 10

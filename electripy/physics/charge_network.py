@@ -1,3 +1,4 @@
+from numpy import ndarray
 from electripy.physics.charges import ChargesSet, PointCharge
 
 
@@ -11,12 +12,14 @@ class ChargeNetwork:
         """
         self.charges = []
         self.groups = []
+        self.charges_set = ChargesSet([])
 
-    def add_charge(self, charge: PointCharge):
+    def add_charge(self, charge: PointCharge) -> None:
         self.charges.append(charge)
+        self.charges_set.charges = self.charges
         self._update_groups()
 
-    def _update_groups(self):
+    def _update_groups(self) -> None:
         self.groups = []
         for charge in self.charges:
             self.groups.append(
@@ -26,22 +29,23 @@ class ChargeNetwork:
                 ]
             )
 
-    def get_electric_forces(self):
+    def get_electric_forces(self) -> list:
         """
         Returns a list of electric forces. There is one electric force for
         each charge in charges. Each electric force is a two dimensional
         vector. The first element is the charge and the second element is
         the electric force the other charges make on it.
         """
-        electric_fields = []
+        electric_forces = []
         for group in self.groups:
-            electric_fields.append(
-                [
-                    group[0],
-                    group[1].electric_field(group[0].possition) * group[0].charge,
-                ]
-            )
-        return electric_fields
+            electric_forces.append([group[0], group[1].electric_force(group[0])])
+        return electric_forces
+
+    def get_electric_field(self, possition: ndarray):
+        """
+        Returns the electric force array at the given point.
+        """
+        return self.charges_set.electric_field(possition)
 
     def __len__(self):
         return len(self.charges)
