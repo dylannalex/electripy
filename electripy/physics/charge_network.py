@@ -10,22 +10,23 @@ class ChargeNetwork:
         a charge, and the second element is the ChargeSet instance
         containing all charges in charges except the charge itself.
         """
-        self.charges = []
         self.groups = []
         self.charges_set = ChargesSet([])
 
     def add_charge(self, charge: PointCharge) -> None:
-        self.charges.append(charge)
-        self.charges_set.charges = self.charges
-        self._update_groups()
+        """
+        Adds the charge to charges_set and updates the groups.
+        """
+        self.charges_set.charges.append(charge)
+        self._update_groups(self.charges_set.charges)
 
-    def _update_groups(self) -> None:
+    def _update_groups(self, charges) -> None:
         self.groups = []
-        for charge in self.charges:
+        for charge in charges:
             self.groups.append(
                 [
                     charge,
-                    ChargesSet([c for c in self.charges if c is not charge]),
+                    ChargesSet([c for c in charges if c is not charge]),
                 ]
             )
 
@@ -48,4 +49,4 @@ class ChargeNetwork:
         return self.charges_set.electric_field(position)
 
     def __len__(self):
-        return len(self.charges)
+        return len(self.charges_set.charges)
