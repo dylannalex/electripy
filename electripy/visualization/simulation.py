@@ -47,7 +47,7 @@ def start_simulation(screen: Screen, clock: pygame.time.Clock) -> None:
         pygame.display.update()
 
 
-def main():
+def main() -> None:
     pygame.init()
     # Screen setup
     screen = Screen(

@@ -1,7 +1,7 @@
 from numpy import array, ndarray
 import pygame
 from typing import Union
-from electripy.physics.charges import PointCharge, Proton, Electron
+from electripy.physics.charges import Proton, Electron
 from electripy.physics.charge_network import ChargeNetwork
 from electripy.visualization import colors, settings, numbers
 
@@ -47,21 +47,22 @@ class Screen:
         self.text_color = colors.WHITE
 
     def clean(self) -> None:
-        """Fills the screen with it's background color"""
+        """Fills the screen with it's background color."""
         self._window.fill(self.background_color)
 
     def clear(self) -> None:
-        """Restarts charge network"""
+        """Restarts charge network."""
         self.charge_network = ChargeNetwork()
         self.clean()
 
-    def add_charge(self, charge) -> None:
-        """Adds a charge to the screen and to the charge network"""
+    def add_charge(self, charge: Union[Proton, Electron]) -> None:
+        """Adds a charge to the screen and to the charge network."""
         self.add_charge_sound.play()
         self.charge_network.add_charge(charge)
         self._refresh_screen()
 
-    def show_electric_field(self, x, y):
+    def show_electric_field(self, x: int, y: int) -> None:
+        """Shows the electric field vector at the given position."""
         self._refresh_screen()
         position = array([x, y])
         ef = self.charge_network.get_electric_field(position)
@@ -75,6 +76,10 @@ class Screen:
         )
 
     def increment_scale_factor(self) -> None:
+        """
+        Increments the ef_vector or force_vector factor depending
+        on the current mode.
+        """
         if self.mode == "electric_force":
             self.force_vector.scale_factor *= Vector.DELTA_SCALE_FACTOR
 
@@ -84,6 +89,10 @@ class Screen:
         self._refresh_screen()
 
     def decrement_scale_factor(self) -> None:
+        """
+        Decrements the ef_vector or force_vector factor depending
+        on the current mode.
+        """
         if self.mode == "electric_force":
             self.force_vector.scale_factor /= Vector.DELTA_SCALE_FACTOR
 
@@ -92,14 +101,19 @@ class Screen:
 
         self._refresh_screen()
 
-    def show_components(self):
+    def show_components(self) -> None:
+        """
+        Shows or hides electric force vectors or electric field vector
+        components depending on the current mode.
+        """
         if self.mode == "electric_field":
             self._show_ef_components = not self._show_ef_components
         if self.mode == "electric_force":
             self._show_force_components = not self._show_force_components
         self._refresh_screen()
 
-    def change_mode(self):
+    def change_mode(self) -> None:
+        """Changes the current mode."""
         if self.mode == "electric_force":
             self.mode = "electric_field"
         else:
@@ -114,13 +128,13 @@ class Screen:
         radius: int,
         color: tuple,
         show_components: bool,
-    ):
+    ) -> None:
         vector.draw(position, array, radius, color)
         if show_components:
             self._display_arrays_components(vector.last_end_point, array)
 
-    def _display_arrays_components(self, position, array):
-        """Displays the arrays components next to the vector drawn"""
+    def _display_arrays_components(self, position: ndarray, array: ndarray):
+        """Displays the arrays components next to the vector drawn."""
         x, y = numbers.array_to_string(array)
         x_text = self.font.render(x, True, self.text_color)
         y_text = self.font.render(y, True, self.text_color)
@@ -141,7 +155,7 @@ class Screen:
             self._draw_charge(charge, force)
 
     def _draw_charge(self, charge: Union[Proton, Electron], force: ndarray) -> None:
-        """Draws a charge and its force vector"""
+        """Draws a charge and its force vector."""
         if isinstance(charge, Proton):
             color = AnimatedProton.COLOR
             radius = AnimatedProton.RADIUS
@@ -166,12 +180,13 @@ class Screen:
 class Vector:
     DELTA_SCALE_FACTOR = 2
 
-    def __init__(self, window, scale_factor):
+    def __init__(self, window: pygame.Surface, scale_factor: int):
         self._window = window
         self.scale_factor = scale_factor
         self.last_end_point = [0, 0]
 
-    def draw(self, position: tuple, vector: tuple, radius: int, color: tuple):
+    def draw(self, position: tuple, vector: tuple, radius: int, color: tuple) -> None:
+        """Draws a vector at the given position."""
         vector_norm = (vector[0] ** 2 + vector[1] ** 2) ** (1 / 2)
         unit_vector = [vector[0] / vector_norm, vector[1] / vector_norm]
         start_point = [

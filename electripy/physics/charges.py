@@ -9,7 +9,7 @@ class PointCharge:
         self,
         charge: Union[float, int],
         position: ndarray,
-    ):
+    ) -> None:
         """
         charge: electric charge in coulomb
         position: two-dimensional vector in meters
@@ -36,7 +36,7 @@ class ChargesSet:
     set.
     """
 
-    def __init__(self, charges: list[PointCharge]):
+    def __init__(self, charges: list[PointCharge]) -> None:
         self.charges = charges
 
     def electric_field(self, point: ndarray) -> ndarray:
@@ -63,7 +63,7 @@ class Electron(PointCharge):
     is -e, where e is the elementary charge (1.60218e-19).
     """
 
-    def __init__(self, position: ndarray):
+    def __init__(self, position: ndarray) -> None:
         self.charge = constants.ELEMENTARY_CHARGE * -1
         self.position = array(position)
 
@@ -74,6 +74,6 @@ class Proton(PointCharge):
     is e, where e is the elementary charge (1.60218e-19).
     """
 
-    def __init__(self, position: ndarray):
+    def __init__(self, position: ndarray) -> None:
         self.charge = constants.ELEMENTARY_CHARGE
         self.position = array(position)
