@@ -8,9 +8,10 @@ Visualize the electric field of a point charges network.
 
 ## :electric_plug: Installation
 
-Install ElectriPy package:
+Install Pygame and ElectriPy package:
 
 ```
+$ pip install pygame
 $ pip install electripy
 ```
 
