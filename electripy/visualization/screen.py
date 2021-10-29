@@ -4,6 +4,12 @@ from typing import Union
 from electripy.physics.charges import Proton, Electron
 from electripy.physics.charge_network import ChargeNetwork
 from electripy.visualization import colors, settings, numbers
+import pkg_resources
+
+
+SOUND_PATH = pkg_resources.resource_filename(
+    "electripy.visualization", "sounds/add_charge.wav"
+)
 
 
 class Screen:
@@ -37,9 +43,7 @@ class Screen:
         self._show_ef_components = True
 
         # Sounds setup
-        self.add_charge_sound = pygame.mixer.Sound(
-            "electripy/visualization/sounds/add_charge.wav"
-        )
+        self.add_charge_sound = pygame.mixer.Sound(SOUND_PATH)
 
         # Text setup
         pygame.font.init()
