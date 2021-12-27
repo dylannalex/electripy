@@ -25,27 +25,17 @@ _NOTE:_ you need to have **Python** and **pip** installed.
 
 ## :electric_plug: Controls
 
-- Right click to add an electron
-- Left click to add a proton
+- <kbd>right click</kbd> to add an electron
+- <kbd>left click</kbd> to add a proton
 - Press <kbd>r</kbd> to remove all charges from screen
-- Press <kbd>+</kbd> to increment vector scale
-- Press <kbd>-</kbd> to decrement vector scale
-- Press <kbd>space</kbd> to display or hide force array components
-- Press <kbd>m</kbd> to change mode
+- Press <kbd>e</kbd> to show the electric field
+- Press <kbd>+</kbd> to increment the electric field brightness
+- Press <kbd>-</kbd> to decrement  the electric field brightness
+- Press <kbd>f</kbd> to show electric force vectors
+- Press <kbd>m</kbd> to show electric field vector at cursor position
+- Press <kbd>space</kbd> to display or hide vectors components
 
-## :electric_plug: Modes
-### Electric Field:
-This mode let you display an electric field vector at mouse position.
-You can also show or hide its components and modify the scale. 
-This mode does not hide charges' force vector.
+_NOTE:_ when showing the electric field vector at cursor position you 
+cannot add new charges. 
 
-### Electric Force:
-This is the default mode when you start running ElectriPy. This mode
-let you modify the scale of all charges' electric force vector and
-display or hide their components.
-When this mode is activated the electric field vector is hiden.
-
-_NOTE:_ controls are the same for both modes. <kbd>+</kbd>, <kbd>-</kbd>
-and <kbd>space</kbd> keys will scale either electric field vector or
-electric force vectors depending on the current mode.
 
