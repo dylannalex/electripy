@@ -15,8 +15,12 @@ def start_simulation(screen: Screen, clock: pygame.time.Clock) -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
+
             # Mouse click events:
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            if (
+                event.type == pygame.MOUSEBUTTONDOWN
+                and not screen.showing_electric_field_at_mouse_position
+            ):
                 mx, my = event.pos
                 position = array([mx, my])
                 if event.button == LEFT:
@@ -26,23 +30,51 @@ def start_simulation(screen: Screen, clock: pygame.time.Clock) -> None:
                 else:
                     continue
                 screen.add_charge(charge)
+
             # Key down events:
+            screen_state_changed = True
             if event.type == pygame.KEYDOWN:
                 key_pressed = pygame.key.name(event.key)
-                if key_pressed == settings.KEYS["increment_scale_factor"]:
-                    screen.increment_scale_factor()
-                if key_pressed == settings.KEYS["decrement_scale_factor"]:
-                    screen.decrement_scale_factor()
+
+                # Action keys
+                if key_pressed == settings.KEYS["increment_electric_field_brightness"]:
+                    screen.increment_electric_field_brightness()
+
+                if key_pressed == settings.KEYS["decrement_electric_field_brightness"]:
+                    screen.decrement_electric_field_brightness()
+
                 if key_pressed == settings.KEYS["clear_screen"]:
                     screen.clear()
-                if key_pressed == settings.KEYS["show_vector_components"]:
-                    screen.show_components()
-                if key_pressed == settings.KEYS["change_mode"]:
-                    screen.change_mode()
+                    continue
 
-        if screen.mode == "electric_field":
-            mx, my = pygame.mouse.get_pos()
-            screen.show_electric_field(mx, my)
+                # State keys:
+                if key_pressed == settings.KEYS["show_vector_components"]:
+                    screen.showing_vectors_components = (
+                        not screen.showing_vectors_components
+                    )
+
+                elif key_pressed == settings.KEYS["show_electric_forces_vectors"]:
+                    screen.showing_electric_forces_vectors = (
+                        not screen.showing_electric_forces_vectors
+                    )
+
+                elif (
+                    key_pressed
+                    == settings.KEYS["show_electric_field_at_mouse_position"]
+                ):
+                    screen.showing_electric_field_at_mouse_position = (
+                        not screen.showing_electric_field_at_mouse_position
+                    )
+
+                elif key_pressed == settings.KEYS["show_electric_field"]:
+                    screen.showing_electric_field = not screen.showing_electric_field
+
+            else:
+                screen_state_changed = False
+
+            if screen_state_changed or screen.showing_electric_field_at_mouse_position:
+                mx, my = pygame.mouse.get_pos()
+                screen.refresh_screen(mx, my)
 
         pygame.display.update()
 
