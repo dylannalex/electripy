@@ -1,5 +1,6 @@
 from numpy import array, ndarray
 from numpy.linalg import norm
+from math import acos, cos, sin, pi, sqrt
 import pygame
 from typing import Callable, Union
 from electripy.physics.charges import Proton, Electron
@@ -250,6 +251,8 @@ class Field:
 
 class Vector:
     DELTA_SCALE_FACTOR = 2
+    DEFAULT_VECTOR_HEAD_LENGTH = 8
+    DEFAULT_VECTOR_WIDTH = 2
 
     def __init__(self, window: pygame.Surface, scale_factor: int) -> None:
         self._window = window
@@ -260,24 +263,85 @@ class Vector:
         """Draws a vector at the given position."""
         vector_norm = (vector[0] ** 2 + vector[1] ** 2) ** (1 / 2)
         unit_vector = [vector[0] / vector_norm, vector[1] / vector_norm]
-        start_point = [
+        start_point = (
             position[0] + unit_vector[0] * radius,
             position[1] + unit_vector[1] * radius,
-        ]
-        end_point = [
+        )
+        end_point = (
             start_point[0] + vector[0] * self.scale_factor,
             start_point[1] + vector[1] * self.scale_factor,
-        ]
+        )
 
-        pygame.draw.line(self._window, color, start_point, end_point, 2)
+        pygame.draw.line(
+            self._window, color, start_point, end_point, Vector.DEFAULT_VECTOR_WIDTH
+        )
+        self._draw_vector_head(
+            vector,
+            end_point,
+            color,
+            Vector.DEFAULT_VECTOR_HEAD_LENGTH,
+            Vector.DEFAULT_VECTOR_WIDTH,
+        )
         self.last_end_point = end_point
 
+    def _draw_vector_head(
+        self, vector, vector_end_point, color, head_length, head_width
+    ):
+        vector_angle = Vector.get_angle(vector)
+        if vector[1] < 0:
+            vector_angle *= -1
 
-class ColoredVector:
+        left_head_vector = (
+            head_length * cos(vector_angle + pi * 5 / 4),
+            head_length * sin(vector_angle + pi * 5 / 4),
+        )
+        left_head_endpoint = (
+            vector_end_point[0] + left_head_vector[0],
+            vector_end_point[1] + left_head_vector[1],
+        )
+
+        pygame.draw.line(
+            self._window,
+            color,
+            vector_end_point,
+            left_head_endpoint,
+            head_width,
+        )
+
+        right_head_vector = (
+            head_length * cos(vector_angle - pi * 5 / 4),
+            head_length * sin(vector_angle - pi * 5 / 4),
+        )
+        right_head_endpoint = (
+            vector_end_point[0] + right_head_vector[0],
+            vector_end_point[1] + right_head_vector[1],
+        )
+
+        pygame.draw.line(
+            self._window,
+            color,
+            vector_end_point,
+            right_head_endpoint,
+            head_width,
+        )
+
+    @staticmethod
+    def get_norm(vector):
+        return sqrt(vector[0] ** 2 + vector[1] ** 2)
+
+    @staticmethod
+    def get_angle(vector):
+        return acos(vector[0] / Vector.get_norm(vector))
+
+
+class ColoredVector(Vector):
     """
     Vector which length is determined by its color. The more red it
     is the grater its norm is.
     """
+
+    DEFAULT_VECTOR_WIDTH = 2
+    DEFAULT_HEAD_LENGTH = 4
 
     def __init__(
         self,
@@ -296,7 +360,16 @@ class ColoredVector:
             position[0] + unit_vector[0] * self.scale_factor,
             position[1] + unit_vector[1] * self.scale_factor,
         ]
-        pygame.draw.line(self._window, color, position, end_point, 3)
+        pygame.draw.line(
+            self._window, color, position, end_point, ColoredVector.DEFAULT_VECTOR_WIDTH
+        )
+        self._draw_vector_head(
+            vector,
+            end_point,
+            color,
+            ColoredVector.DEFAULT_HEAD_LENGTH,
+            ColoredVector.DEFAULT_VECTOR_WIDTH,
+        )
 
 
 class AnimatedProton:
