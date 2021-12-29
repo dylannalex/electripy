@@ -126,9 +126,9 @@ class Screen:
     ) -> None:
         vector.draw(position, array, radius, color)
         if show_components:
-            self._display_arrays_components(vector.last_end_point, array)
+            self._display_arrays_components(list(vector.last_end_point), array)
 
-    def _display_arrays_components(self, position: ndarray, array: ndarray):
+    def _display_arrays_components(self, position: list, array: ndarray):
         """Displays the arrays components next to the vector drawn."""
         x, y = numbers.array_to_string(array)
         x_text = self.font.render(x, True, self.text_color)
