@@ -143,14 +143,15 @@ class Screen:
         for each charge on screen.
         """
         self.clean()
+
+        if self.showing_electric_field:
+            self.show_electric_field()
+
         electric_forces = self.charge_network.get_electric_forces()
         for ef in electric_forces:
             charge = ef[0]
             force = ef[1]
             self._draw_charge(charge, force)
-
-        if self.showing_electric_field:
-            self.show_electric_field()
 
         if self.showing_electric_field_at_mouse_position:
             self.show_electric_field_vector(mx, my)
