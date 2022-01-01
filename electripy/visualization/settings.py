@@ -19,3 +19,10 @@ KEYS = {
     "remove_last_charge_added": "z",
     "add_last_charge_removed": "y",
 }
+
+# Text settings:
+CHARGES_SIGN_FONT = "Arial"
+PROTON_SIGN_FONT_SIZE = 23
+ELECTRON_SIGN_FONT_SIZE = 35
+VECTOR_COMPONENTS_FONT = "Arial"
+VECTOR_COMPONENTS_FONT_SIZE = 13

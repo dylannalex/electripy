@@ -61,10 +61,19 @@ class Screen:
         # Sounds setup
         self.add_charge_sound = pygame.mixer.Sound(SOUND_PATH)
 
-        # Text setup
+        # Text settings
         pygame.font.init()
-        self.font = pygame.font.SysFont("Arial", 13)
-        self.text_color = colors.WHITE
+        self.vector_components_font = pygame.font.SysFont(
+            settings.VECTOR_COMPONENTS_FONT, settings.VECTOR_COMPONENTS_FONT_SIZE
+        )
+        self.vector_components_font_color = colors.WHITE
+        self.proton_text_surface = pygame.font.SysFont(
+            settings.CHARGES_SIGN_FONT, settings.PROTON_SIGN_FONT_SIZE, bold=True
+        ).render("+", False, colors.BLACK)
+
+        self.electron_text_surface = pygame.font.SysFont(
+            settings.CHARGES_SIGN_FONT, settings.ELECTRON_SIGN_FONT_SIZE, bold=False
+        ).render("-", False, colors.BLACK)
 
     def clean(self) -> None:
         """Fills the screen with it's background color."""
@@ -156,8 +165,12 @@ class Screen:
     def _display_arrays_components(self, position: list, array: ndarray):
         """Displays the arrays components next to the vector drawn."""
         x, y = numbers.array_to_string(array)
-        x_text = self.font.render(x, True, self.text_color)
-        y_text = self.font.render(y, True, self.text_color)
+        x_text = self.vector_components_font.render(
+            x, True, self.vector_components_font_color
+        )
+        y_text = self.vector_components_font.render(
+            y, True, self.vector_components_font_color
+        )
         self._window.blit(x_text, position)
         position[1] += 15
         self._window.blit(y_text, position)
@@ -191,12 +204,23 @@ class Screen:
         if isinstance(charge, Proton):
             color = AnimatedProton.COLOR
             radius = AnimatedProton.RADIUS
+            charge_text_surface = self.proton_text_surface
+            y_sign_displacement = 1
 
         if isinstance(charge, Electron):
             color = AnimatedElectron.COLOR
             radius = AnimatedElectron.RADIUS
+            charge_text_surface = self.electron_text_surface
+            y_sign_displacement = 2
 
         pygame.draw.circle(self._window, color, charge.position, radius)
+
+        # Draw charge sign:
+        sign_position = (
+            charge.position[0] - charge_text_surface.get_width() // 2,
+            charge.position[1] - charge_text_surface.get_width() * y_sign_displacement,
+        )
+        self._window.blit(charge_text_surface, sign_position)
 
         if len(self.charge_network) > 1 and self.showing_electric_forces_vectors:
             self._draw_vector(
