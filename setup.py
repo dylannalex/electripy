@@ -4,7 +4,7 @@ from distutils.core import setup
 setup(
     name="electripy",
     packages=["electripy", "electripy.physics", "electripy.visualization"],
-    version="0.0.3",
+    version="0.0.4",
     license="MIT",
     description="Visualize the electric field of a point charge network",
     author="Dylan Tintenfich",
