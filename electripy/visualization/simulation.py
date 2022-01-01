@@ -17,10 +17,7 @@ def start_simulation(screen: Screen, clock: pygame.time.Clock) -> None:
                 return
 
             # Mouse click events:
-            if (
-                event.type == pygame.MOUSEBUTTONDOWN
-                and not screen.showing_electric_field_at_mouse_position
-            ):
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = event.pos
                 position = array([mx, my])
                 if event.button == LEFT:
