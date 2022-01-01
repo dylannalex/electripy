@@ -1,6 +1,3 @@
-from numpy import MAY_SHARE_EXACT
-
-
 BLACK = (0, 0, 0)
 BLUE = (54, 74, 255)
 RED = (255, 54, 54)
