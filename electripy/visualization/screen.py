@@ -6,6 +6,7 @@ from typing import Callable, Union
 from electripy.physics.charges import Proton, Electron
 from electripy.physics.charge_network import ChargeNetwork
 from electripy.visualization import colors, settings, numbers
+from collections import deque
 import pkg_resources
 
 
@@ -40,6 +41,8 @@ class Screen:
         self.force_vector = Vector(
             self._window, settings.DEFAULT_FORCE_VECTOR_SCALE_FACTOR
         )
+        self.charges_removed = deque()
+
         # Electric Field
         self.ef_vector = Vector(self._window, settings.DEFAULT_EF_VECTOR_SCALE_FACTOR)
         self.electric_field = Field(
@@ -72,12 +75,22 @@ class Screen:
         self.charge_network = ChargeNetwork()
         self.clean()
 
-    def add_charge(self, charge: Union[Proton, Electron]) -> None:
+    def add_charge(
+        self, charge: Union[Proton, Electron], clean_charges_removed: bool
+    ) -> None:
         """Adds a charge to the screen and to the charge network."""
         self.add_charge_sound.play()
         self.charge_network.add_charge(charge)
         self.electric_field.field_function = self.charge_network.get_electric_field
         self.refresh_screen()
+        if clean_charges_removed:
+            self.charges_removed = deque()
+
+    def add_last_charge_removed(self) -> None:
+        if not self.charges_removed:
+            return
+        charge = self.charges_removed.pop()
+        self.add_charge(charge, False)
 
     def remove_last_charge_added(self) -> None:
         if not len(self.charge_network):
@@ -85,6 +98,7 @@ class Screen:
         charge = self.charge_network[-1]
         self.charge_network.remove_charge(charge)
         self.electric_field.field_function = self.charge_network.get_electric_field
+        self.charges_removed.append(charge)
         self.refresh_screen()
 
     def show_electric_field_vector(self, x: int, y: int) -> None:

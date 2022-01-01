@@ -29,7 +29,7 @@ def start_simulation(screen: Screen, clock: pygame.time.Clock) -> None:
                     charge = Electron(position)
                 else:
                     continue
-                screen.add_charge(charge)
+                screen.add_charge(charge, True)
 
             # Key down events:
             screen_state_changed = True
@@ -44,6 +44,12 @@ def start_simulation(screen: Screen, clock: pygame.time.Clock) -> None:
                     and key_pressed == settings.KEYS["remove_last_charge_added"]
                 ):  # CTRL + remove_last_charge_added key
                     screen.remove_last_charge_added()
+                    continue
+                if (
+                    mods & pygame.KMOD_CTRL
+                    and key_pressed == settings.KEYS["add_last_charge_removed"]
+                ):  # CTRL + add_last_charge_removed key
+                    screen.add_last_charge_removed()
                     continue
 
                 # Single key down:
