@@ -32,6 +32,9 @@ class Screen:
         self.background_color = background_color
         self.clean()
 
+        # Screen attributes
+        self._last_cursor_position = (0, 0)
+
         # Charge network and Vector setup
         self.charge_network = ChargeNetwork()
         self.force_vector = Vector(
@@ -73,6 +76,14 @@ class Screen:
         """Adds a charge to the screen and to the charge network."""
         self.add_charge_sound.play()
         self.charge_network.add_charge(charge)
+        self.electric_field.field_function = self.charge_network.get_electric_field
+        self.refresh_screen()
+
+    def remove_last_charge_added(self) -> None:
+        if not len(self.charge_network):
+            return
+        charge = self.charge_network[-1]
+        self.charge_network.remove_charge(charge)
         self.electric_field.field_function = self.charge_network.get_electric_field
         self.refresh_screen()
 
@@ -154,7 +165,12 @@ class Screen:
             self._draw_charge(charge, force)
 
         if self.showing_electric_field_at_mouse_position:
+            if mx is None or my is None:
+                mx, my = self._last_cursor_position
             self.show_electric_field_vector(mx, my)
+
+        if mx is not None or my is not None:
+            self._last_cursor_position = (mx, my)
 
     def _draw_charge(self, charge: Union[Proton, Electron], force: ndarray) -> None:
         """Draws a charge and its force vector."""

@@ -20,6 +20,13 @@ class ChargeNetwork:
         self.charges_set.charges.append(charge)
         self._update_groups(self.charges_set.charges)
 
+    def remove_charge(self, charge: PointCharge) -> None:
+        """
+        Removes the charge to charges_set and updates the groups.
+        """
+        self.charges_set.charges.remove(charge)
+        self._update_groups(self.charges_set.charges)
+
     def _update_groups(self, charges: list[PointCharge]) -> None:
         """
         Let X be a charge from the charge network. Computing X electric
@@ -61,3 +68,6 @@ class ChargeNetwork:
 
     def __len__(self):
         return len(self.charges_set.charges)
+
+    def __getitem__(self, index):
+        return self.charges_set[index]

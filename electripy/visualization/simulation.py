@@ -35,8 +35,18 @@ def start_simulation(screen: Screen, clock: pygame.time.Clock) -> None:
             screen_state_changed = True
             if event.type == pygame.KEYDOWN:
                 key_pressed = pygame.key.name(event.key)
+                mods = pygame.key.get_mods()
 
-                # Action keys
+                """Action keys"""
+                # Key down combinations:
+                if (
+                    mods & pygame.KMOD_CTRL
+                    and key_pressed == settings.KEYS["remove_last_charge_added"]
+                ):  # CTRL + remove_last_charge_added key
+                    screen.remove_last_charge_added()
+                    continue
+
+                # Single key down:
                 if key_pressed == settings.KEYS["increment_electric_field_brightness"]:
                     screen.increment_electric_field_brightness()
 
@@ -47,7 +57,8 @@ def start_simulation(screen: Screen, clock: pygame.time.Clock) -> None:
                     screen.clear()
                     continue
 
-                # State keys:
+                """ State keys: """
+                # Single key down:
                 if key_pressed == settings.KEYS["show_vector_components"]:
                     screen.showing_vectors_components = (
                         not screen.showing_vectors_components

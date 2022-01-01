@@ -16,4 +16,5 @@ KEYS = {
     "show_electric_field": "e",
     "increment_electric_field_brightness": "+",
     "decrement_electric_field_brightness": "-",
+    "remove_last_charge_added": "z",
 }

@@ -56,6 +56,9 @@ class ChargesSet:
         ef = self.electric_field(charge.position)
         return ef * charge.charge
 
+    def __getitem__(self, index):
+        return self.charges[index]
+
 
 class Electron(PointCharge):
     """
