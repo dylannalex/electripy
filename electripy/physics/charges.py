@@ -28,38 +28,6 @@ class PointCharge:
         )
 
 
-class ChargesSet:
-    """
-    A ChargesSet instance is a group of charges. The electric
-    field at a given point can be calculated as the sum of each
-    electric field at that point for every charge in the charge
-    set.
-    """
-
-    def __init__(self, charges: list[PointCharge]) -> None:
-        self.charges = charges
-
-    def electric_field(self, point: ndarray) -> ndarray:
-        """
-        Returns the electric field at the specified point.
-        """
-        ef = array([0.0, 0.0])
-        for charge in self.charges:
-            ef += charge.electric_field(point)
-        return ef
-
-    def electric_force(self, charge: PointCharge) -> ndarray:
-        """
-        Returns the force of the electric field exerted
-        on the charge.
-        """
-        ef = self.electric_field(charge.position)
-        return ef * charge.charge
-
-    def __getitem__(self, index):
-        return self.charges[index]
-
-
 class Electron(PointCharge):
     """
     An Electron instance is a PointCharge object which charge
