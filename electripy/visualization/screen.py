@@ -4,7 +4,7 @@ from math import acos, cos, sin, pi, sqrt
 import pygame
 from typing import Callable, Union
 from electripy.physics.charges import Proton, Electron
-from electripy.physics.charge_network import ChargeNetwork
+from electripy.physics.charge_distribution import ChargeDistribution
 from electripy.visualization import colors, settings, numbers
 from collections import deque
 import pkg_resources
@@ -36,8 +36,8 @@ class Screen:
         # Screen attributes
         self._last_cursor_position = (0, 0)
 
-        # Charge network and Vector setup
-        self.charge_network = ChargeNetwork()
+        # Charge distribution and Vector setup
+        self.charge_distribution = ChargeDistribution()
         self.force_vector = Vector(
             self._window, settings.DEFAULT_FORCE_VECTOR_SCALE_FACTOR
         )
@@ -48,7 +48,7 @@ class Screen:
         self.electric_field = Field(
             self._window,
             settings.DEFAULT_EF_BRIGHTNESS,
-            self.charge_network.get_electric_field,
+            self.charge_distribution.get_electric_field,
             settings.DEFAULT_SPACE_BETWEEN_EF_VECTORS,
         )
 
@@ -80,17 +80,17 @@ class Screen:
         self._window.fill(self.background_color)
 
     def clear(self) -> None:
-        """Restarts charge network."""
-        self.charge_network = ChargeNetwork()
+        """Restarts charge distribution."""
+        self.charge_distribution = ChargeDistribution()
         self.clean()
 
     def add_charge(
         self, charge: Union[Proton, Electron], clean_charges_removed: bool
     ) -> None:
-        """Adds a charge to the screen and to the charge network."""
+        """Adds a charge to the screen and to the charge distribution."""
         self.add_charge_sound.play()
-        self.charge_network.add_charge(charge)
-        self.electric_field.field_function = self.charge_network.get_electric_field
+        self.charge_distribution.add_charge(charge)
+        self.electric_field.field_function = self.charge_distribution.get_electric_field
         self.refresh_screen()
         if clean_charges_removed:
             self.charges_removed = deque()
@@ -102,18 +102,18 @@ class Screen:
         self.add_charge(charge, False)
 
     def remove_last_charge_added(self) -> None:
-        if not len(self.charge_network):
+        if not len(self.charge_distribution):
             return
-        charge = self.charge_network[-1]
-        self.charge_network.remove_charge(charge)
-        self.electric_field.field_function = self.charge_network.get_electric_field
+        charge = self.charge_distribution[-1]
+        self.charge_distribution.remove_charge(charge)
+        self.electric_field.field_function = self.charge_distribution.get_electric_field
         self.charges_removed.append(charge)
         self.refresh_screen()
 
     def show_electric_field_vector(self, x: int, y: int) -> None:
         """Shows the electric field vector at the given position."""
         position = array([x, y])
-        ef = self.charge_network.get_electric_field(position)
+        ef = self.charge_distribution.get_electric_field(position)
         self._draw_vector(
             self.ef_vector,
             position,
@@ -185,7 +185,7 @@ class Screen:
         if self.showing_electric_field:
             self.show_electric_field()
 
-        electric_forces = self.charge_network.get_electric_forces()
+        electric_forces = self.charge_distribution.get_electric_forces()
         for ef in electric_forces:
             charge = ef[0]
             force = ef[1]
@@ -222,7 +222,7 @@ class Screen:
         )
         self._window.blit(charge_text_surface, sign_position)
 
-        if len(self.charge_network) > 1 and self.showing_electric_forces_vectors:
+        if len(self.charge_distribution) > 1 and self.showing_electric_forces_vectors:
             self._draw_vector(
                 self.force_vector,
                 charge.position,
@@ -234,7 +234,7 @@ class Screen:
 
     def show_electric_field(self) -> None:
         restricted_points = [
-            charge.position for charge in self.charge_network.charges_set.charges
+            charge.position for charge in self.charge_distribution.charges_set.charges
         ]
         self.electric_field.draw(restricted_points)
 
