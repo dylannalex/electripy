@@ -41,3 +41,7 @@ _NOTE:_ when showing the electric field vector at cursor position you
 cannot add new charges. 
 
 
+## :electric_plug: Physics
+
+You can check out a simple explanation of the physics used to make ElectriPy
+[HERE](https://github.com/dylannalex/electripy/blob/master/physics/PHYSICS.md).
