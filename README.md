@@ -37,10 +37,6 @@ _NOTE:_ you need to have **Python** and **pip** installed.
 - <kbd>M</kbd> to show electric field vector at cursor position
 - <kbd>SPACE</kbd> to display or hide vectors components
 
-_NOTE:_ when showing the electric field vector at cursor position you 
-cannot add new charges. 
-
-
 ## :electric_plug: Physics
 
 You can check out a simple explanation of the physics used to make ElectriPy
