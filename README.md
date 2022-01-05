@@ -1,5 +1,8 @@
 # ElectriPy :zap:
 
+[![downloads](https://pepy.tech/badge/sierra)](https://pepy.tech/project/sierra)
+![licence](https://img.shields.io/github/license/dylannalex/electripy?color=blue)
+
 <p align="center">
   <img width="400" height="400" src="../media/electripy-demo.gif?raw=true">
 </p>
