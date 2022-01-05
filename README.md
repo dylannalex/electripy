@@ -1,6 +1,6 @@
 # ElectriPy :zap:
 
-[![downloads](https://pepy.tech/badge/sierra)](https://pepy.tech/project/sierra)
+[![Downloads](https://pepy.tech/badge/electripy)](https://pepy.tech/project/electripy)
 ![licence](https://img.shields.io/github/license/dylannalex/electripy?color=blue)
 
 <p align="center">
