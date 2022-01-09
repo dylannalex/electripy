@@ -33,12 +33,12 @@ _NOTE:_ you need to have **Python** and **pip** installed.
 - <kbd>CTRL</kbd> + <kbd>Z</kbd> to remove last charge added
 - <kbd>CTRL</kbd> + <kbd>Y</kbd> to add last charge removed 
 - <kbd>R</kbd> to remove all charges from screen
-- <kbd>E</kbd> to show the electric field
+- <kbd>E</kbd> to show/hide the electric field
 - <kbd>+</kbd> to increment the electric field brightness
 - <kbd>-</kbd> to decrement  the electric field brightness
-- <kbd>F</kbd> to show electric force vectors
-- <kbd>M</kbd> to show electric field vector at cursor position
-- <kbd>SPACE</kbd> to display or hide vectors components
+- <kbd>F</kbd> to show/hide electric force vectors
+- <kbd>M</kbd> to show/hide electric field vector at cursor position
+- <kbd>SPACE</kbd> to show/hide vectors components
 
 ## :electric_plug: Physics
 
