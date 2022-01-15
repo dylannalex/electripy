@@ -4,9 +4,9 @@ from distutils.core import setup
 setup(
     name="electripy",
     packages=["electripy", "electripy.physics", "electripy.visualization"],
-    version="0.0.4.1",
+    version="0.0.4.2",
     license="MIT",
-    description="Visualize the electric field of a point charge network",
+    description="Learn electrostatics by playing around with electrons and protons",
     author="Dylan Tintenfich",
     author_email="tintenfichdylan05@gmail.com",
     url="https://github.com/dylannalex/electripy",
