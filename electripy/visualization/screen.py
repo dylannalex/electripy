@@ -155,10 +155,12 @@ class Screen:
     def increment_electric_field_brightness(self) -> None:
         if self.electric_field.brightness < Field.MAX_BRIGHTNESS:
             self.electric_field.brightness += Field.BRIGHTNESS_VARIATION
+        self.clear_electric_field_copy()
 
     def decrement_electric_field_brightness(self) -> None:
         if self.electric_field.brightness > Field.MIN_BRIGHTNESS:
             self.electric_field.brightness -= Field.BRIGHTNESS_VARIATION
+        self.clear_electric_field_copy()
 
     def _draw_vector(
         self,
