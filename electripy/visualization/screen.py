@@ -34,7 +34,9 @@ class Screen:
         self.clean()
 
         # Screen attributes
+        self._electric_field_copy = None
         self._last_cursor_position = (0, 0)
+        self._last_screen_size = self._window.get_size()
 
         # Charge distribution and Vector setup
         self.charge_distribution = ChargeDistribution()
@@ -81,6 +83,7 @@ class Screen:
 
     def clear(self) -> None:
         """Restarts charge distribution."""
+        self.clear_electric_field_copy()
         self.charge_distribution = ChargeDistribution()
         self.clean()
 
@@ -91,6 +94,7 @@ class Screen:
         self.add_charge_sound.play()
         self.charge_distribution.add_charge(charge)
         self.electric_field.field_function = self.charge_distribution.get_electric_field
+        self.clear_electric_field_copy()
         self.refresh_screen()
         if clean_charges_removed:
             self.charges_removed = deque()
@@ -108,6 +112,7 @@ class Screen:
         self.charge_distribution.remove_charge(charge)
         self.electric_field.field_function = self.charge_distribution.get_electric_field
         self.charges_removed.append(charge)
+        self.clear_electric_field_copy()
         self.refresh_screen()
 
     def show_electric_field_vector(self, x: int, y: int) -> None:
@@ -183,7 +188,10 @@ class Screen:
         self.clean()
 
         if self.showing_electric_field:
-            self.show_electric_field()
+            if not self._electric_field_copy:
+                self.show_electric_field()
+            else:
+                self._window.blit(self._electric_field_copy, (0, 0))
 
         electric_forces = self.charge_distribution.get_electric_forces()
         for ef in electric_forces:
@@ -237,6 +245,16 @@ class Screen:
             charge.position for charge in self.charge_distribution.charges_set.charges
         ]
         self.electric_field.draw(restricted_points)
+        self._electric_field_copy = self._window.copy()
+
+    def clear_electric_field_copy(self):
+        self._electric_field_copy = None
+
+    def has_been_resized(self) -> bool:
+        if self._window.get_size() != self._last_screen_size:
+            self._last_screen_size = self._window.get_size()
+            return True
+        return False
 
 
 class Field:

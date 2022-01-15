@@ -16,6 +16,10 @@ def start_simulation(screen: Screen, clock: pygame.time.Clock) -> None:
             if event.type == pygame.QUIT:
                 return
 
+            if screen.has_been_resized():
+                screen.clear_electric_field_copy()
+                screen.refresh_screen()
+
             # Mouse click events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = event.pos
