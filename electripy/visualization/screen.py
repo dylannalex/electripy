@@ -41,12 +41,18 @@ class Screen:
         # Charge distribution and Vector setup
         self.charge_distribution = ChargeDistribution()
         self.force_vector = Vector(
-            self._window, settings.DEFAULT_FORCE_VECTOR_SCALE_FACTOR
+            self._window,
+            settings.DEFAULT_FORCE_VECTOR_SCALE_FACTOR,
+            settings.MINIMUM_FORCE_VECTOR_NORM,
         )
         self.charges_removed = deque()
 
         # Electric Field
-        self.ef_vector = Vector(self._window, settings.DEFAULT_EF_VECTOR_SCALE_FACTOR)
+        self.ef_vector = Vector(
+            self._window,
+            settings.DEFAULT_EF_VECTOR_SCALE_FACTOR,
+            settings.MINIMUM_ELECTRIC_FIELD_VECTOR_NORM,
+        )
         self.electric_field = Field(
             self._window,
             settings.DEFAULT_EF_BRIGHTNESS,
@@ -327,15 +333,32 @@ class Vector:
     DEFAULT_VECTOR_HEAD_LENGTH = 8
     DEFAULT_VECTOR_WIDTH = 2
 
-    def __init__(self, window: pygame.Surface, scale_factor: int) -> None:
+    def __init__(
+        self, window: pygame.Surface, scale_factor: int, minimum_vector_norm: int = None
+    ) -> None:
         self._window = window
         self.scale_factor = scale_factor
+        self.minimum_vector_norm = minimum_vector_norm
         self.last_end_point = [0, 0]
 
-    def draw(self, position: tuple, vector: tuple, radius: int, color: tuple) -> None:
+    def draw(
+        self,
+        position: tuple,
+        vector: tuple,
+        radius: int,
+        color: tuple,
+    ) -> None:
         """Draws a vector at the given position."""
         vector_norm = (vector[0] ** 2 + vector[1] ** 2) ** (1 / 2)
         unit_vector = [vector[0] / vector_norm, vector[1] / vector_norm]
+
+        if self.minimum_vector_norm:
+            if vector_norm * self.scale_factor < self.minimum_vector_norm:
+                vector = (
+                    unit_vector[0] * self.minimum_vector_norm / self.scale_factor,
+                    unit_vector[1] * self.minimum_vector_norm / self.scale_factor,
+                )
+
         start_point = (
             position[0] + unit_vector[0] * radius,
             position[1] + unit_vector[1] * radius,
