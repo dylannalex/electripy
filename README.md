@@ -43,4 +43,4 @@ _NOTE:_ you need to have **Python** and **pip** installed.
 ## :electric_plug: Physics
 
 You can check out a simple explanation of the physics used to make ElectriPy
-[HERE](https://github.com/dylannalex/electripy/blob/master/physics/PHYSICS.md).
+[HERE](./PHYSICS.md).
